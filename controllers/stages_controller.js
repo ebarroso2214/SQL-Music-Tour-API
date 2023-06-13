@@ -20,8 +20,10 @@ stages.post('/', async (req, res) => {
 stages.get('/', async (req, res) => {
   try {
     const foundStages = await Stage.findAll({
+      offset: req.query.page ? (req.query.page-1) * 10 : 0,
+      limit: 10,
       where: {
-        stage_name: { [Op.like]: `%${req.query.stage_name ? req.query.stage_name : ''}%` },
+        stage_name: { [Op.like]: `%${req.query.name ? req.query.name : ''}%`}
       },
     });
     res.status(200).json(foundStages);
@@ -35,12 +37,11 @@ stages.get('/:name', async (req, res) => {
       where: { stage_name: req.params.name },
       include: {
         model: Event,
+        required: false,
         as: 'events',
         attributes: ['name', 'date'],
         through: { attributes: [] },
-      },
-      attributes: { exclude: ['stage_id'] },
-      order: [[{ model: Event, as: 'events' }, 'date', 'ASC']],
+      }
     });
     res.status(200).json(foundStage);
   } catch (error) {
@@ -58,6 +59,7 @@ stages.put('/:id', async (req, res) => {
     });
     res.status(200).json({
       message: `Successfully updated ${updatedStages} stage(s)`,
+      data: updatedStages
     });
   } catch (err) {
     res.status(500).json(err);

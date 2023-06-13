@@ -20,10 +20,12 @@ events.post('/', async (req, res) => {
 events.get('/', async (req, res) => {
   try {
     const foundEvents = await Event.findAll({
+      offset: req.query.page ? (req.query.page-1) * 10 : 0,
+      limit: 10,
       order: [['date', 'ASC']],
       where: {
-        name: { [Op.like]: `%${req.query.name ? req.query.name : ''}%` },
-      },
+        name: { [Op.like]: `%${req.query.name ? req.query.name : ''}%`}
+      }
     });
     res.status(200).json(foundEvents);
   } catch (error) {
@@ -38,6 +40,7 @@ events.get('/:name', async (req, res) => {
       include: [
         {
           model: MeetGreet,
+          required: false,
           as: 'meet_greets',
           attributes: ['meet_start_time', 'meet_end_time'],
           include: {

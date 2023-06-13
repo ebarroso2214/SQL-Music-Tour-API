@@ -35,15 +35,15 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true
     },
     event_id: {
-      type: DataTypes.SMALLINT,
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     stage_id: {
-      type: DataTypes.SMALLINT,
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     band_id: {
-      type: DataTypes.SMALLINT,
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     start_time: {

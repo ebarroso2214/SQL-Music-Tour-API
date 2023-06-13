@@ -8,9 +8,11 @@ const { Op } = require('sequelize')
 bands.get('/', async (req, res) => {
   try {
       const foundBands = await Band.findAll({
+          offset: req.query.page ? (req.query.page - 1) * 10: 0 ,
+          limit: 10,
           order: [ [ 'available_start_time', 'ASC' ] ],
           where: {
-              name: { [Op.like]: `%${req.query.name ? req.query.name : ''}%` }
+            name: { [Op.like]: `%${req.query.name ? req.query.name : ''}%` }
           }
       })
       res.status(200).json(foundBands)
@@ -32,6 +34,7 @@ bands.get('/:name', async (req, res) => {
                 include: {
                     model: Event,
                     as: "event",
+                    required: false,
                     where: { name: { [Op.like]: `%${req.query.event ? req.query.event : ''}%`}}
                 }
             },
@@ -41,9 +44,14 @@ bands.get('/:name', async (req, res) => {
                 include: {
                     model: Event,
                     as: "event",
+                    required: false,
                     where: { name: { [Op.like]: `%${req.query.event ? req.query.event : ''}%`}}
                 }
             }
+        ],
+        order: [
+            ["meet_greets", "event", "date", "ASC"],
+            ["set_times", "event", "date", "ASC"]
         ]
         })
         res.status(200).json(foundBand)

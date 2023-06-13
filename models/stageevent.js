@@ -20,11 +20,11 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true
     },
     stage_id: {
-      type: DataTypes.SMALLINT,
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     event_id: {
-      type: DataTypes.SMALLINT,
+      type: DataTypes.INTEGER,
       allowNull: false
     }
   }, {
